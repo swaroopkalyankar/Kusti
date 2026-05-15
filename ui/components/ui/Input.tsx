@@ -1,17 +1,28 @@
-import { useState } from 'react';
-import { Text, TextInput, View } from 'react-native';
+import { forwardRef, useState } from 'react';
+
+import {
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
+
 import { useTheme } from '../../theme/themeContext';
 
-export default function Input({
+const Input = forwardRef(({
   label,
   value,
   onChangeText,
   placeholder,
   error,
   secureTextEntry = false,
-}: any) {
+  returnKeyType = 'next',
+  onSubmitEditing,
+}: any, ref: any) => {
+
   const theme = useTheme();
-  const [isFocused, setIsFocused] = useState(false);
+
+  const [isFocused, setIsFocused] =
+    useState(false);
 
   const borderColor = error
     ? theme.colors.error
@@ -20,8 +31,11 @@ export default function Input({
     : theme.colors.border;
 
   return (
-    <View style={{ marginBottom: theme.spacing.md }}>
-      
+    <View
+      style={{
+        marginBottom: theme.spacing.md,
+      }}
+    >
       {/* Label */}
       {label && (
         <Text
@@ -35,13 +49,18 @@ export default function Input({
         </Text>
       )}
 
-      {/* Input Box */}
+      {/* Input */}
       <TextInput
+        ref={ref}
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}
-        placeholderTextColor={theme.colors.textSecondary}
+        placeholderTextColor={
+          theme.colors.textSecondary
+        }
         secureTextEntry={secureTextEntry}
+        returnKeyType={returnKeyType}
+        onSubmitEditing={onSubmitEditing}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
         style={{
@@ -68,4 +87,6 @@ export default function Input({
       )}
     </View>
   );
-}
+});
+
+export default Input;

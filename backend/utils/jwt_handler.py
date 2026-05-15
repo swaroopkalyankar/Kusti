@@ -1,6 +1,6 @@
 from jose import jwt
 from datetime import datetime, timedelta
-from app.config import SECRET_KEY, ALGORITHM
+from config import SECRET_KEY, ALGORITHM
 
 def create_token(data: dict):
     to_encode = data.copy()

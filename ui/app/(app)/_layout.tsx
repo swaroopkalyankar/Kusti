@@ -1,88 +1,245 @@
-// import { Ionicons } from '@expo/vector-icons';
-// import { Stack, Tabs } from 'expo-router';
-// import { useWindowDimensions } from 'react-native';
-
-// export default function AppLayout() {
-//   const { width } = useWindowDimensions();
-//   const isMobile = width < 768;
-
-//   if (!isMobile) {
-//     // 🖥️ WEB → use Stack (no tabs)
-//     return <Stack screenOptions={{ headerShown: false }} />;
-//   }
-
-//   // 📱 MOBILE → use Tabs
-//   return (
-//     <Tabs
-//       screenOptions={({ route }) => ({
-//         headerShown: false,
-//         tabBarIcon: ({ color, size }) => {
-//           let iconName: any;
-
-//           if (route.name === 'dashboard') iconName = 'home';
-//           else if (route.name === 'tab1') iconName = 'grid';
-//           else if (route.name === 'tab2') iconName = 'layers';
-
-//           return <Ionicons name={iconName} size={size} color={color} />;
-//         },
-//       })}
-//     >
-//       <Tabs.Screen name="dashboard" />
-//       <Tabs.Screen name="tab1" />
-//       <Tabs.Screen name="tab2" />
-//     </Tabs>
-//   );
-// }
-
 import { Ionicons } from '@expo/vector-icons';
-import { Redirect, Stack, Tabs } from 'expo-router';
-import { useWindowDimensions } from 'react-native';
+import {
+  Redirect,
+  Stack,
+  Tabs,
+  router,
+  usePathname,
+} from 'expo-router';
+
+import {
+  Platform,
+  Pressable,
+  Text,
+  View,
+} from 'react-native';
+
 import { useAuth } from '../../hooks/fake_auth';
 
-import MobileLayout from '../layouts/MobileLayout';
-import WebLayout from '../layouts/web/WebLayout';
+import { useTheme } from '../../theme/themeContext';
 
 export default function AppLayout() {
   const { isLoggedIn } = useAuth();
-  const { width } = useWindowDimensions();
 
-  const isMobile = width < 768;
+  const theme = useTheme();
 
-  // 🔒 AUTH GUARD
+  const pathname = usePathname();
+
   if (!isLoggedIn) {
     return <Redirect href="/login" />;
   }
 
-  // 🖥️ WEB → Sidebar Layout + Stack
-  if (!isMobile) {
+  // 🖥️ WEB SIDEBAR
+  if (Platform.OS === 'web') {
     return (
-      <WebLayout>
-        <Stack screenOptions={{ headerShown: false }} />
-      </WebLayout>
+      <View
+        style={{
+          flex: 1,
+          flexDirection: 'row',
+          backgroundColor: theme.colors.background,
+        }}
+      >
+        {/* Sidebar */}
+        <View
+          style={{
+            width: 240,
+            backgroundColor: theme.colors.surface,
+            borderRightWidth: 1,
+            borderRightColor: theme.colors.border,
+            paddingTop: theme.spacing.xl,
+            paddingHorizontal: theme.spacing.md,
+          }}
+        >
+          <Text
+            style={{
+              fontSize: theme.typography.h2,
+              fontWeight: 'bold',
+              color: theme.colors.textPrimary,
+              marginBottom: theme.spacing.xl,
+            }}
+          >
+            Kushti Admin
+          </Text>
+
+          <SidebarItem
+            label="Dashboard"
+            icon="home"
+            active={pathname.includes('dashboard')}
+            onPress={() => router.push('/dashboard')}
+          />
+
+          <SidebarItem
+            label="Matches"
+            icon="trophy"
+            active={pathname.includes('matches')}
+            onPress={() => router.push('/matches')}
+          />
+
+          <SidebarItem
+            label="Players"
+            icon="people"
+            active={pathname.includes('players')}
+            onPress={() => router.push('/players')}
+          />
+
+          <SidebarItem
+            label="Tournaments"
+            icon="medal"
+            active={pathname.includes('tournaments')}
+            onPress={() => router.push('/tournaments')}
+          />
+
+          <SidebarItem
+            label="Officials"
+            icon="shield-checkmark"
+            active={pathname.includes('officials')}
+            onPress={() => router.push('/officials')}
+          />
+        </View>
+
+        {/* Content */}
+        <View
+          style={{
+            flex: 1,
+          }}
+        >
+          <Stack screenOptions={{ headerShown: false }} />
+        </View>
+      </View>
     );
   }
 
-  // 📱 MOBILE → Bottom Tabs
+  // 📱 MOBILE TABS
   return (
-          <MobileLayout>
     <Tabs
       screenOptions={({ route }) => ({
         headerShown: false,
+
+        tabBarActiveTintColor: theme.colors.primary,
+        tabBarInactiveTintColor:
+          theme.colors.textSecondary,
+
+        tabBarStyle: {
+          height: 65,
+          paddingBottom: 8,
+          paddingTop: 8,
+          backgroundColor: theme.colors.surface,
+          borderTopColor: theme.colors.border,
+        },
+
         tabBarIcon: ({ color, size }) => {
-          let iconName: any;
+          let iconName: any = 'home';
 
-          if (route.name === 'dashboard') iconName = 'home';
-          else if (route.name === 'tab1') iconName = 'grid';
-          else if (route.name === 'tab2') iconName = 'layers';
+          if (route.name === 'dashboard') {
+            iconName = 'home';
+          } else if (route.name === 'matches') {
+            iconName = 'trophy';
+          } else if (route.name === 'players') {
+            iconName = 'people';
+          } else if (route.name === 'tournaments') {
+            iconName = 'medal';
+          } else if (route.name === 'officials') {
+            iconName = 'shield-checkmark';
+          }
 
-          return <Ionicons name={iconName} size={size} color={color} />;
+          return (
+            <Ionicons
+              name={iconName}
+              size={size}
+              color={color}
+            />
+          );
         },
       })}
     >
-      <Tabs.Screen name="dashboard" />
-      <Tabs.Screen name="tab1" />
-      <Tabs.Screen name="tab2" />
+       <Tabs.Screen
+    name="dashboard"
+    options={{
+      title: 'Dashboard',
+    }}
+  />
+
+  <Tabs.Screen
+    name="players"
+    options={{
+      title: 'Players',
+    }}
+  />
+
+  <Tabs.Screen
+    name="officials"
+    options={{
+      title: 'Officials',
+    }}
+  />
+
+  <Tabs.Screen
+    name="tournaments"
+    options={{
+      title: 'Tournaments',
+    }}
+  />
+
+  <Tabs.Screen
+    name="matches"
+    options={{
+      title: 'Matches',
+    }}
+  />
     </Tabs>
-    </MobileLayout>
+  );
+}
+
+function SidebarItem({
+  label,
+  icon,
+  active,
+  onPress,
+}: any) {
+  const theme = useTheme();
+
+  return (
+    <Pressable
+      onPress={onPress}
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 12,
+
+        paddingVertical: theme.spacing.md,
+        paddingHorizontal: theme.spacing.md,
+
+        borderRadius: theme.radius.md,
+
+        backgroundColor: active
+          ? theme.colors.primary
+          : 'transparent',
+
+        marginBottom: theme.spacing.sm,
+      }}
+    >
+      <Ionicons
+        name={icon}
+        size={20}
+        color={
+          active
+            ? '#fff'
+            : theme.colors.textPrimary
+        }
+      />
+
+      <Text
+        style={{
+          color: active
+            ? '#fff'
+            : theme.colors.textPrimary,
+
+          fontSize: theme.typography.body,
+          fontWeight: '500',
+        }}
+      >
+        {label}
+      </Text>
+    </Pressable>
   );
 }

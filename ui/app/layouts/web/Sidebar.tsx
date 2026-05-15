@@ -37,7 +37,7 @@ export default function Sidebar({
             marginBottom: 8,
             borderRadius: 8,
             backgroundColor:
-              path === item.path
+              path?.includes(item.path)
                 ? theme.colors.primary
                 : 'transparent',
           }}
@@ -45,7 +45,7 @@ export default function Sidebar({
           <Text
             style={{
               color:
-                path === item.path
+                path?.includes(item.path)
                   ? '#fff'
                   : theme.colors.textPrimary,
             }}
