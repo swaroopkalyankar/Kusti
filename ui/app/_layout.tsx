@@ -1,14 +1,14 @@
-import { Stack } from 'expo-router';
+import { Slot } from 'expo-router';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import { ThemeProvider } from '@/theme/themeContext';
+import { ThemeProvider } from '../theme/themeContext';
 
 export default function RootLayout() {
   return (
-    <SafeAreaProvider>
-      <ThemeProvider>
-        <Stack screenOptions={{ headerShown: false }} />
-      </ThemeProvider>
-    </SafeAreaProvider>
+    <ThemeProvider>
+      <SafeAreaProvider>
+        <Slot />
+      </SafeAreaProvider>
+    </ThemeProvider>
   );
 }

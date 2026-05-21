@@ -201,147 +201,129 @@ title="Add"
         </View>
 
         {/* Players List */}
+        {/* Players List */}
+<View
+  style={{
+    gap: 16,
+  }}
+>
+  {players.map((player, index) => (
+    <Card
+  key={player.id ?? index}
+  style={{
+    borderRadius: 22,
+    padding: 0,
+    backgroundColor: theme.colors.surface,
+    shadowColor: '#000',
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 4,
+  }}
+>
+      <View
+        style={{
+          padding: 24,
+          borderRadius: 18,
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
+        {/* LEFT INFO */}
+        <View style={{ flex: 1 }}>
+          <Text
+            style={{
+              fontSize: 20,
+              fontWeight: '700',
+              color: theme.colors.textPrimary,
+              marginBottom: 10,
+            }}
+          >
+            {player.name}
+          </Text>
+
+          <Text style={{ color: theme.colors.textSecondary }}>
+            Age: {player.age} • Gender: {player.gender}
+          </Text>
+
+          <Text
+            style={{
+              color: theme.colors.textSecondary,
+              marginTop: 4,
+            }}
+          >
+            Weight: {player.weight} kg • Category: {player.category}
+          </Text>
+
+          <Text
+            style={{
+              color: theme.colors.textSecondary,
+              marginTop: 4,
+            }}
+          >
+            {player.city}, {player.state}
+          </Text>
+
+          <Text
+            style={{
+              color: theme.colors.textSecondary,
+              marginTop: 4,
+            }}
+          >
+            Mobile: {player.mobile}
+          </Text>
+        </View>
+
+        {/* ACTIONS */}
         <View
           style={{
-            gap: theme.spacing.md,
+            flexDirection: 'row',
+            gap: 10,
+            marginLeft: 20,
           }}
         >
-          {players.map((player, index) => (
-            <Card key={index}>
-  <View style={{ padding: 12, gap: 6 }}>
+          <Button
+            title="Edit"
+            size="sm"
+            onPress={() => {
+              setEditingId(player.id);
 
-    {/* NAME */}
-    <Text
-      style={{
-        fontSize: theme.typography.body,
-        fontWeight: '600',
-        color: theme.colors.textPrimary,
-        flexWrap: 'wrap',
-      }}
-    >
-      {player.name}
-    </Text>
+              reset({
+                name: player.name ?? '',
+                age: String(player.age ?? ''),
+                gender: player.gender ?? 'male',
+                city: player.city ?? '',
+                state: player.state ?? '',
+                mobile: player.mobile ?? '',
+                weight: String(player.weight ?? ''),
+                category: player.category ?? '',
+              });
 
-    {/* DETAILS */}
-    <View style={{ marginTop: theme.spacing.sm, gap: 4 }}>
+              setOpen(true);
+            }}
+          />
 
-      <Text
-        style={{
-          color: theme.colors.textSecondary,
-          flexWrap: 'wrap',
-        }}
-      >
-        Age: {player.age}
-      </Text>
+          <Button
+            title="Delete"
+            variant="danger"
+            size="sm"
+            onPress={async () => {
+              try {
+                await deletePlayer(player.id);
 
-      <Text
-        style={{
-          color: theme.colors.textSecondary,
-          flexWrap: 'wrap',
-        }}
-      >
-        Gender: {player.gender}
-      </Text>
-
-      <Text
-        style={{
-          color: theme.colors.textSecondary,
-          flexWrap: 'wrap',
-        }}
-      >
-        Weight: {player.weight}
-      </Text>
-
-      <Text
-        style={{
-          color: theme.colors.textSecondary,
-          flexWrap: 'wrap',
-        }}
-      >
-        Category: {player.category}
-      </Text>
-
-      <Text
-        style={{
-          color: theme.colors.textSecondary,
-          flexWrap: 'wrap',
-        }}
-      >
-        City: {player.city}
-      </Text>
-
-      <Text
-        style={{
-          color: theme.colors.textSecondary,
-          flexWrap: 'wrap',
-        }}
-      >
-        State: {player.state}
-      </Text>
-
-      <Text
-        style={{
-          color: theme.colors.textSecondary,
-          flexWrap: 'wrap',
-        }}
-      >
-        Mobile: {player.mobile}
-      </Text>
-    </View>
-
-    {/* ACTIONS */}
-    <View
-      style={{
-        flexDirection: 'row',
-        justifyContent: 'flex-end',
-        gap: theme.spacing.sm,
-        marginTop: theme.spacing.md,
-      }}
-    >
-      <Button
-        title="✏️"
-        variant="ghost"
-        size="sm"
-        onPress={() => {
-          setEditingId(player.id);
-
-          reset({
-            name: player.name ?? '',
-            age: String(player.age ?? ''),
-            gender: player.gender ?? 'male',
-            city: player.city ?? '',
-            state: player.state ?? '',
-            mobile: player.mobile ?? '',
-            weight: String(player.weight ?? ''),
-            category: player.category ?? '',
-          });
-
-          setOpen(true);
-        }}
-      />
-
-      <Button
-        title="🗑️"
-        variant="ghost"
-        size="sm"
-        onPress={async () => {
-          try {
-            await deletePlayer(player.id);
-
-            setPlayers((prev) =>
-              prev.filter((p) => p.id !== player.id)
-            );
-          } catch (error) {
-            console.log('Delete error:', error);
-          }
-        }}
-      />
-    </View>
-
-  </View>
-</Card>
-          ))}
+                setPlayers((prev) =>
+                  prev.filter((p) => p.id !== player.id)
+                );
+              } catch (error) {
+                console.log('Delete error:', error);
+              }
+            }}
+          />
         </View>
+      </View>
+    </Card>
+  ))}
+</View>
       </ScrollView>
 
       {/* Modal */}

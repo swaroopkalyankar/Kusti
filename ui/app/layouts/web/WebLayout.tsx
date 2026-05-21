@@ -20,10 +20,18 @@ export default function WebLayout({ children }: any) {
   const anim = useRef(new Animated.Value(1)).current;
 
   const menu = [
-    { name: 'Dashboard', path: '/dashboard' },
-    { name: 'Tab 1', path: '/tab1' },
-    { name: 'Tab 2', path: '/tab2' },
-  ];
+  { name: 'Dashboard', path: '/dashboard' },
+
+  { name: 'Players', path: '/players' },
+
+  { name: 'Matches', path: '/matches' },
+
+  { name: 'Officials', path: '/officials' },
+
+  { name: 'Tournaments', path: '/tournaments' },
+
+  { name: 'Scoring', path: '/scoring' },
+];
 
   useEffect(() => {
     Animated.timing(anim, {

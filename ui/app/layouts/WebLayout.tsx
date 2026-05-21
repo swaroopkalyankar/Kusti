@@ -109,7 +109,7 @@ export default function WebLayout({ children }: any) {
             <TouchableOpacity
               key={item.path}
               onPress={() => {
-                router.replace(item.path);
+                router.replace(item.path as any);
               }}
               style={{
                 padding: 12,
